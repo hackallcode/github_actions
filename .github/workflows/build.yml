@@ -21,16 +21,16 @@ jobs:
       - id: success_jobs
         run: cat success_jobs 2>/dev/null || echo ''
     outputs:
-      success_jobs: ${{ steps.success_jobs.outputs }}
+      success_jobs: ${{ toJson(steps.success_jobs.outputs) }}
 
   build-docker:
     needs: ['prepare']
     runs-on: ubuntu-latest
     steps:
       - run: |
-          echo "${{ needs.prepare.outputs.success_jobs }}"
-          echo "${{ needs.prepare.outputs.success_jobs.build_docker }}"
-          echo "${{ needs.prepare.outputs.success_jobs['build-docker'] }}"
+          echo "${{ fromJson(needs.prepare.outputs.success_jobs) }}"
+          echo "${{ fromJson(needs.prepare.outputs.success_jobs).build_docker }}"
+          echo "${{ fromJson(needs.prepare.outputs.success_jobs)['build-docker'] }}"
       - uses: actions/checkout@v2
       - name: Sleep
         id: sleep
