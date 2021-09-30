@@ -32,6 +32,7 @@ jobs:
           sleep 15
 
       - name: Remember result
+        if: ${{ always() }}
         run: echo "::set-output name=value::${{ job.status }}" > prev_result
   test-fail:
     needs: ['build-docker']
@@ -60,6 +61,7 @@ jobs:
           error
 
       - name: Remember result
+        if: ${{ always() }}
         run: echo "::set-output name=value::${{ job.status }}" > prev_result
   test-success:
     needs: ['test-fail']
