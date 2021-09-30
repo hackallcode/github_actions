@@ -8,11 +8,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  test-fail:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Error
-        id: error
-        run: |
-          error
+#  test-fail:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Error
+#        id: error
+#        run: |
+#          error
