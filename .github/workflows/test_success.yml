@@ -13,9 +13,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: '${{ github.ref }}'
+          ref: '${{ github.sha }}'
       - name: Sleep
         id: sleep
         run: |
-          echo "$GITHUB_REF" "${{ github.ref }}"
+          echo "$GITHUB_REF" "${{ github.sha }}"
           sleep 15
