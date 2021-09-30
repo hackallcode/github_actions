@@ -8,15 +8,17 @@ jobs:
   build-docker:
     runs-on: ubuntu-latest
     steps:
-      - id: timestamp
-        run: echo "::set-output name=value::$(timestamp +%s)"
+      - name: Get current time
+        id: timestamp
+        run: echo "::set-output name=value::$(/bin/date -u "+%Y%m%d")"
       - name: Restore the previous run result
         uses: actions/cache@v2
         with:
           path: prev_result
           key: ${{ github.run_id }}-${{ github.job }}-${{ steps.timestamp.outputs.value }}
           restore-keys: ${{ github.run_id }}-${{ github.job }}-
-      - id: prev_result
+      - name: Parse previous result
+        id: prev_result
         run: cat prev_result 2>/dev/null || echo 'no result'
 
       - name: Checkout
@@ -29,12 +31,14 @@ jobs:
           echo "${{ github.sha }}"
           sleep 15
 
-      - run: echo "::set-output name=value::${{ job.status }}" > prev_result
+      - name: Remember result
+        run: echo "::set-output name=value::${{ job.status }}" > prev_result
   test-fail:
     needs: ['build-docker']
     runs-on: ubuntu-latest
     steps:
-      - id: timestamp
+      - name: Get current time
+        id: timestamp
         run: echo "::set-output name=value::$(timestamp +%s)"
       - name: Restore the previous run result
         uses: actions/cache@v2
@@ -42,7 +46,8 @@ jobs:
           path: prev_result
           key: ${{ github.run_id }}-${{ github.job }}-${{ steps.timestamp.outputs.value }}
           restore-keys: ${{ github.run_id }}-${{ github.job }}-
-      - id: prev_result
+      - name: Parse previous result
+        id: prev_result
         run: cat prev_result 2>/dev/null || echo 'no result'
 
       - name: Checkout
@@ -54,7 +59,8 @@ jobs:
         run: |
           error
 
-      - run: echo "::set-output name=value::${{ job.status }}" > prev_result
+      - name: Remember result
+        run: echo "::set-output name=value::${{ job.status }}" > prev_result
   test-success:
     needs: ['test-fail']
     runs-on: ubuntu-latest
