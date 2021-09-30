@@ -12,7 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: '${{ github.ref }}'
       - name: Sleep
         id: sleep
         run: |
+          echo "$GITHUB_REF" "${{ github.ref }}"
           sleep 15
