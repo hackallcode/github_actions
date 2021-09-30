@@ -5,51 +5,56 @@ on:
   workflow_dispatch:
 
 jobs:
-  prepare:
+  build-docker:
     runs-on: ubuntu-latest
     steps:
       - id: timestamp
-        run: echo "::set-output name=timestamp::$(timestamp +%s)"
-      - name: Restore the previous success jobs
+        run: echo "::set-output name=value::$(timestamp +%s)"
+      - name: Restore the previous run result
         uses: actions/cache@v2
         with:
-          path: |
-            success_jobs
-          key: ${{ github.run_id }}-${{ steps.timestamp.outputs.timestamp }}
-          restore-keys: |
-            ${{ github.run_id }}-
-      - id: success_jobs
-        run: cat success_jobs 2>/dev/null || echo ''
-    outputs:
-      success_jobs: ${{ toJson(steps.success_jobs.outputs) }}
+          path: prev_result
+          key: ${{ github.run_id }}-${{ github.job }}-${{ steps.timestamp.outputs.value }}
+          restore-keys: ${{ github.run_id }}-${{ github.job }}-
+      - id: prev_result
+        run: cat prev_result 2>/dev/null || echo 'no result'
 
-  build-docker:
-    needs: ['prepare']
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo "${{ fromJson(needs.prepare.outputs.success_jobs) }}"
-          echo "${{ fromJson(needs.prepare.outputs.success_jobs).build_docker }}"
-          echo "${{ fromJson(needs.prepare.outputs.success_jobs)['build-docker'] }}"
-      - uses: actions/checkout@v2
+      - name: Checkout
+        if: steps.prev_result.outputs.value != 'success'
+        uses: actions/checkout@v2
+
       - name: Sleep
-        if: ${{ fromJson(needs.prepare.outputs.success_jobs).build_docker != 'success' }}
-        id: sleep
+        if: steps.prev_result.outputs.value != 'success'
         run: |
           echo "${{ github.sha }}"
           sleep 15
-      - run: |
-          echo "::set-output name=build_docker::success" > success_jobs
-          echo "::set-output name=build-docker::success" > success_jobs
+
+      - run: echo "::set-output name=value::${{ job.status }}" > prev_result
   test-fail:
     needs: ['build-docker']
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - id: timestamp
+        run: echo "::set-output name=value::$(timestamp +%s)"
+      - name: Restore the previous run result
+        uses: actions/cache@v2
+        with:
+          path: prev_result
+          key: ${{ github.run_id }}-${{ github.job }}-${{ steps.timestamp.outputs.value }}
+          restore-keys: ${{ github.run_id }}-${{ github.job }}-
+      - id: prev_result
+        run: cat prev_result 2>/dev/null || echo 'no result'
+
+      - name: Checkout
+        if: steps.prev_result.outputs.value != 'success'
+        uses: actions/checkout@v2
+
       - name: Error
-        id: error
+        if: steps.prev_result.outputs.value != 'success'
         run: |
           error
+
+      - run: echo "::set-output name=value::${{ job.status }}" > prev_result
   test-success:
     needs: ['test-fail']
     runs-on: ubuntu-latest
