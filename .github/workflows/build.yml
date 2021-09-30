@@ -34,7 +34,7 @@ jobs:
         run: |
           echo "${{ github.sha }}"
           sleep 15
-      - run: echo "::set-output name=success_jobs::${{ toJson(fromJson(needs.prepare.outputs.success_jobs) + [github.job]) }}" > success_jobs
+      - run: echo "::set-output name=success_jobs::${{ toJson(fromJson(needs.prepare.outputs.success_jobs)) }}" > success_jobs
   test-fail:
     needs: ['build-docker']
     runs-on: ubuntu-latest
