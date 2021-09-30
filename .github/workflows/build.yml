@@ -35,6 +35,7 @@ jobs:
         if: ${{ always() }}
         run: echo "::set-output name=value::${{ job.status }}" > prev_result
   test-fail:
+    if: 'false'
     needs: ['build-docker']
     runs-on: ubuntu-latest
     steps:
