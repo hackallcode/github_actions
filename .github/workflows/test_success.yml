@@ -17,5 +17,5 @@ jobs:
       - name: Sleep
         id: sleep
         run: |
-          echo "$GITHUB_REF" "${{ github.sha }}"
+          echo "${{ github.sha }}"
           sleep 15
