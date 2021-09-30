@@ -1,10 +1,10 @@
 name: Test Success 2
 
 on:
-  workflow_run:
-    workflows: ["Test Success"]
-    types:
-      - completed
+#  workflow_run:
+#    workflows: ["Test Success"]
+#    types:
+#      - completed
   workflow_dispatch:
 
 jobs:
