@@ -8,8 +8,8 @@ jobs:
   build-docker:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Sleep
+      - uses: actions/checkout@v2
+      - name: Sleep
         id: sleep
         run: |
           sleep 15

@@ -11,8 +11,8 @@ jobs:
   test-fail:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Error
+      - uses: actions/checkout@v2
+      - name: Error
         id: error
         run: |
           error
