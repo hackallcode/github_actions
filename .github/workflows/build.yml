@@ -19,7 +19,7 @@ jobs:
           restore-keys: |
             ${{ github.run_id }}-
       - id: success_jobs
-        run: cat success_jobs 2>/dev/null || echo '[]'
+        run: cat success_jobs 2>/dev/null || echo '{}'
     outputs:
       success_jobs: ${{ steps.success_jobs.outputs.run_result }}
 
