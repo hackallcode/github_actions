@@ -33,13 +33,14 @@ jobs:
           echo "${{ fromJson(needs.prepare.outputs.success_jobs)['build-docker'] }}"
       - uses: actions/checkout@v2
       - name: Sleep
+        if: ${{ fromJson(needs.prepare.outputs.success_jobs).build_docker != 'success' }}
         id: sleep
         run: |
           echo "${{ github.sha }}"
           sleep 15
       - run: |
-          echo "::set-output name=build_docker::success }}" > success_jobs
-          echo "::set-output name=build-docker::success }}" > success_jobs
+          echo "::set-output name=build_docker::success" > success_jobs
+          echo "::set-output name=build-docker::success" > success_jobs
   test-fail:
     needs: ['build-docker']
     runs-on: ubuntu-latest
