@@ -19,15 +19,9 @@ jobs:
           restore-keys: |
             ${{ github.run_id }}-
       - id: success_jobs
-        run: cat success_jobs 2>/dev/null || echo '{}'
-      - id: run_result
-        run: cat run_result 2>/dev/null || echo '{}'
-      - run: |
-          echo "${{ steps.success_jobs.outputs.success_jobs }}"
-          echo "${{ steps.success_jobs.outputs.run_result }}"
-          echo "${{ steps.run_result.outputs.run_result }}"
+        run: cat success_jobs 2>/dev/null || echo ''
     outputs:
-      success_jobs: ${{ steps.success_jobs.outputs.run_result }}
+      success_jobs: ${{ steps.success_jobs.outputs }}
 
   build-docker:
     needs: ['prepare']
@@ -35,15 +29,17 @@ jobs:
     steps:
       - run: |
           echo "${{ needs.prepare.outputs.success_jobs }}"
-#          echo "${{ contains(fromJson(needs.prepare.outputs.success_jobs), github.job) }}"
-#          echo "${{ !contains(fromJson(needs.prepare.outputs.success_jobs), github.job) }}"
+          echo "${{ needs.prepare.outputs.success_jobs.build_docker }}"
+          echo "${{ needs.prepare.outputs.success_jobs['build-docker'] }}"
       - uses: actions/checkout@v2
       - name: Sleep
         id: sleep
         run: |
           echo "${{ github.sha }}"
           sleep 15
-      - run: echo "::set-output name=success_jobs::${{ toJson(fromJson(needs.prepare.outputs.success_jobs)) }}" > success_jobs
+      - run: |
+          echo "::set-output name=build_docker::success }}" > success_jobs
+          echo "::set-output name=build-docker::success }}" > success_jobs
   test-fail:
     needs: ['build-docker']
     runs-on: ubuntu-latest
