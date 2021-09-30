@@ -20,6 +20,12 @@ jobs:
             ${{ github.run_id }}-
       - id: success_jobs
         run: cat success_jobs 2>/dev/null || echo '{}'
+      - id: run_result
+        run: cat run_result 2>/dev/null || echo '{}'
+      - run: |
+          echo "${{ steps.success_jobs.outputs.success_jobs }}"
+          echo "${{ steps.success_jobs.outputs.run_result }}"
+          echo "${{ steps.run_result.outputs.run_result }}"
     outputs:
       success_jobs: ${{ steps.success_jobs.outputs.run_result }}
 
