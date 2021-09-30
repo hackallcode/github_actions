@@ -25,9 +25,11 @@ jobs:
 
   build-docker:
     needs: ['prepare']
-    if: ${{ !contains(fromJson(needs.prepare.outputs.success_jobs), github.job) }}
     runs-on: ubuntu-latest
     steps:
+      - run: |
+          echo "${{ contains(fromJson(needs.prepare.outputs.success_jobs), github.job) }}"
+          echo "${{ !contains(fromJson(needs.prepare.outputs.success_jobs), github.job) }}"
       - uses: actions/checkout@v2
       - name: Sleep
         id: sleep
