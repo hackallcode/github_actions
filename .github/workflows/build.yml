@@ -1,0 +1,15 @@
+name: Build
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build-docker:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Sleep
+        id: sleep
+        run: |
+          sleep 15
